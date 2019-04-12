@@ -158,9 +158,9 @@ int main(int argc, char * argv[]) {
     glUniform1i(glad_glGetUniformLocation(ourShader.programID,"texture1"),0);
     glUniform1i(glad_glGetUniformLocation(ourShader.programID,"texture2"),1);
 
-    glm::mat4 transform = glm::mat4(1.0f);
-    transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    transform = glm::scale(transform, glm::vec3(0.5f,0.5f,0.5f));
+//    glm::mat4 transform = glm::mat4(1.0f);
+//    transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
+//    transform = glm::scale(transform, glm::vec3(0.5f,0.5f,0.5f));
 
     
     // Rendering Loop
@@ -173,6 +173,11 @@ int main(int argc, char * argv[]) {
         glClear(GL_COLOR_BUFFER_BIT);
         
         glUniform1f(glGetUniformLocation(ourShader.programID, "mixValue"), mixValue);
+        
+        glm::mat4 transform = glm::mat4(1.0f);
+        
+        transform = glm::translate(transform, glm::vec3(-0.5f, 0.5f, 0.0f));
+        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(glGetUniformLocation(ourShader.programID,"transform"),1,GL_FALSE,glm::value_ptr(transform));
         
         ourShader.user();
@@ -186,6 +191,14 @@ int main(int argc, char * argv[]) {
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
     //        glDrawArrays(GL_TRIANGLES,0,3);
+        
+        transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+        float scal = abs( sin((float)glfwGetTime()));
+        transform = glm::scale(transform, glm::vec3(scal,scal,0));
+        
+        glUniformMatrix4fv(glGetUniformLocation(ourShader.programID,"transform"),1,GL_FALSE,&transform[0].x);
+        glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
         
         // Flip Buffers and Draw
         glfwSwapBuffers(window);
