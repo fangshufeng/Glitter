@@ -50,10 +50,10 @@ int main(int argc, char * argv[]) {
     
     float vertices[] = {
         // positions          // colors           // texture coords
-        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f, // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f  // top left
     };
   
 
@@ -89,7 +89,7 @@ int main(int argc, char * argv[]) {
     
     glBindVertexArray(0);
     
-    Shader  ourShader  = Shader("./3.3.texture.vs", "./3.3.texture.fs");
+    Shader  ourShader  = Shader("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.texture.vs", "/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.texture.fs");
     
     
     // 创建纹理
@@ -98,8 +98,8 @@ int main(int argc, char * argv[]) {
     glBindTexture(GL_TEXTURE_2D,texture); // 2d纹理
 
     // 设置纹理的环绕方式
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 
     // 设置纹理过滤
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -119,6 +119,38 @@ int main(int argc, char * argv[]) {
     stbi_image_free(data);
     
     
+    // 创建纹理
+    unsigned int texture2;
+    glGenTextures(1,&texture2);
+    glBindTexture(GL_TEXTURE_2D,texture2); // 2d纹理
+    
+    // 设置纹理的环绕方式
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+    
+    // 设置纹理过滤
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    
+    
+    
+    int width2,height2,nrChannels2;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data2 = stbi_load("/Users/fangshufeng/Desktop/thirdPart/Glitter/awesomeface.png", &width2, &height2, &nrChannels2, 0);
+    
+    // 绑定到buffer上
+    if (data2 != nullptr) {
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width2,height2,0,GL_RGBA,GL_UNSIGNED_BYTE,data2);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    
+    stbi_image_free(data2);
+    
+    ourShader.user();
+    glUniform1i(glad_glGetUniformLocation(ourShader.programID,"texture1"),0);
+    glUniform1i(glad_glGetUniformLocation(ourShader.programID,"texture2"),1);
+
+    
     // Rendering Loop
     while (glfwWindowShouldClose(window) == false) {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -131,7 +163,13 @@ int main(int argc, char * argv[]) {
         
         ourShader.user();
         
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,texture);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D,texture2);
+        
+        
         glBindVertexArray(vao);
         
         glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
