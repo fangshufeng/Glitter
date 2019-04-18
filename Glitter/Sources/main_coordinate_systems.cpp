@@ -242,28 +242,34 @@ int main(int argc, char * argv[]) {
         
         glBindVertexArray(vao);
         
-        // Model matrix
-        glm::mat4 model ;
-//        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1,0,0));
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 0.5f, 0.0f));
-
         // view matrix
         glm::mat4 view;
-        view = glm::translate(view, glm::vec3(0,0,-3.0f));
+        float radius = 1.0f;
+        view = glm::translate(view, glm::vec3(sin(glfwGetTime()) * radius,cos(glfwGetTime()) * radius, -5.0f));
 
         // projection
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         
         
-        glUniformMatrix4fv(glGetUniformLocation(ourShader.programID,"model"),1, GL_FALSE,glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(ourShader.programID,"view"),1, GL_FALSE,glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(ourShader.programID,"projection"),1, GL_FALSE,glm::value_ptr(projection));
         
-        
+        for (int i = 0; i < 1; i++) {
+            
+            // Model matrix
+            glm::mat4 model ;
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 50 * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 0.5f, 0.0f));
+
+            
+            glUniformMatrix4fv(glGetUniformLocation(ourShader.programID,"model"),1, GL_FALSE,glm::value_ptr(model));
+            glDrawArrays(GL_TRIANGLES,0,36);
+        }
         
 //        glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
-        glDrawArrays(GL_TRIANGLES,0,36);
+        
         
         // Flip Buffers and Draw
         glfwSwapBuffers(window);
