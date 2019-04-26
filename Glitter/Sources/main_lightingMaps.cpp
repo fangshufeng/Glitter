@@ -161,9 +161,11 @@ int main(int argc, char * argv[]) {
     
     
     unsigned int diffuseMap =   loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/container2.png");
+    unsigned int specularMap =   loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/container2_specular.png");
     
     ourShader.user();
     glUniform1i(glad_glGetUniformLocation(ourShader.programID,"material.diffuse"),0);
+    glUniform1i(glad_glGetUniformLocation(ourShader.programID,"material.specular"),0);
     
     // Rendering Loop
     while (glfwWindowShouldClose(window) == false) {
@@ -186,13 +188,15 @@ int main(int argc, char * argv[]) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,diffuseMap);
         
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D,specularMap);
+        
         glUniform3f(glGetUniformLocation(ourShader.programID, "lightColor"),  1.0f, 1.0f, 1.0f);
         
         glUniform3f(glGetUniformLocation(ourShader.programID, "lightPos"),  1.2f, 1.0f, 2.0f);
         glUniform3fv(glGetUniformLocation(ourShader.programID, "viewPos"),  1,&camera.Position[0]);
         
      
-        glUniform3f(glGetUniformLocation(ourShader.programID, "material.specular"),  0.5f, 0.5f, 0.5f);
         glUniform1f(glGetUniformLocation(ourShader.programID, "material.shininess"), 32.0f);
 
         glUniform3f(glGetUniformLocation(ourShader.programID, "light.ambient"),  0.1f,0.1f,0.1f  );
