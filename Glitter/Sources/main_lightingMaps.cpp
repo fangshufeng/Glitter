@@ -161,11 +161,14 @@ int main(int argc, char * argv[]) {
     
     
     unsigned int diffuseMap =   loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/container2.png");
-    unsigned int specularMap =   loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/container2_specular.png");
+    unsigned int specularMap =   loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/lighting_maps_specular_color.png");
+//    unsigned int emissionMap =   loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/matrix.jpg");
+    
     
     ourShader.user();
     glUniform1i(glad_glGetUniformLocation(ourShader.programID,"material.diffuse"),0);
-    glUniform1i(glad_glGetUniformLocation(ourShader.programID,"material.specular"),0);
+    glUniform1i(glad_glGetUniformLocation(ourShader.programID,"material.specular"),1);
+//    glUniform1i(glad_glGetUniformLocation(ourShader.programID,"material.emission"),2);
     
     // Rendering Loop
     while (glfwWindowShouldClose(window) == false) {
@@ -190,6 +193,9 @@ int main(int argc, char * argv[]) {
         
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D,specularMap);
+        
+//        glActiveTexture(GL_TEXTURE2);
+//        glBindTexture(GL_TEXTURE_2D,emissionMap);
         
         glUniform3f(glGetUniformLocation(ourShader.programID, "lightColor"),  1.0f, 1.0f, 1.0f);
         
