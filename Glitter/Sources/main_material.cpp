@@ -172,6 +172,7 @@ int main(int argc, char * argv[]) {
         ourShader.user();
         
         
+        
         glUniform3f(glGetUniformLocation(ourShader.programID, "objectColor"),  1.0f, 0.5f, 0.31f);
         glUniform3f(glGetUniformLocation(ourShader.programID, "lightColor"),  1.0f, 1.0f, 1.0f);
         
@@ -183,6 +184,26 @@ int main(int argc, char * argv[]) {
         glUniform3f(glGetUniformLocation(ourShader.programID, "material.diffuse"),  1.0f, 0.5f, 0.31f);
         glUniform3f(glGetUniformLocation(ourShader.programID, "material.specular"),  0.5f, 0.5f, 0.5f);
         glUniform1f(glGetUniformLocation(ourShader.programID, "material.shininess"), 32.0f);
+        
+        
+//        glm::vec3 lightColor;
+//        lightColor.x = sin(glfwGetTime() * 2.0f);
+//        lightColor.y = sin(glfwGetTime() * 0.7f);
+//        lightColor.z = sin(glfwGetTime() * 1.3f);
+//
+//        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // 降低影响
+//        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // 很低的影响
+
+        
+        glUniform3f(glGetUniformLocation(ourShader.programID, "light.ambient"),  0.1f,0.1f,0.1f  );
+        glUniform3f(glGetUniformLocation(ourShader.programID, "light.diffuse"),  1.0f, 1.0f, 1.0f);
+        glUniform3f(glGetUniformLocation(ourShader.programID, "light.specular"),  .5f, .5f, 0.5f);
+        
+//        glUniform3fv(glGetUniformLocation(ourShader.programID, "light.ambient"),  1,&ambientColor[0] );
+//        glUniform3fv(glGetUniformLocation(ourShader.programID, "light.diffuse"),  1,&diffuseColor[0]);
+//        glUniform3f(glGetUniformLocation(ourShader.programID, "light.specular"),  1.0f, 1.0f, 1.0f);
+        
+        
         //        glUniform3fv(glGetUniformLocation(ourShader.programID, "lightPos"), 1, &lightPos[0]);
         
         // Model matrix
