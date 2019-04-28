@@ -221,6 +221,7 @@ int main(int argc, char * argv[]) {
         glUniform3fv(glGetUniformLocation(ourShader.programID, "light.direction"),1,  &camera.Front[0]);
         glUniform3fv(glGetUniformLocation(ourShader.programID, "light.position"),1, &camera.Position[0]);
         glUniform1f(glGetUniformLocation(ourShader.programID, "light.cutOff"), glm::cos(glm::radians(12.5f)));
+        ourShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
         
         glUniform3f(glGetUniformLocation(ourShader.programID, "light.ambient"),  0.1f,0.1f,0.1f  );
         glUniform3f(glGetUniformLocation(ourShader.programID, "light.diffuse"), 0.8f, 0.8f, 0.8f);
