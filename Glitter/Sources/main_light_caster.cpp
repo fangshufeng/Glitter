@@ -209,18 +209,21 @@ int main(int argc, char * argv[]) {
         
         glUniform3f(glGetUniformLocation(ourShader.programID, "lightColor"),  1.0f, 1.0f, 1.0f);
         
-//        glUniform3f(glGetUniformLocation(ourShader.programID, "lightPos"),  1.2f, 1.0f, 2.0f);
+        glUniform3f(glGetUniformLocation(ourShader.programID, "lightPos"),  1.2f, 1.0f, 2.0f);
         
         glUniform3fv(glGetUniformLocation(ourShader.programID, "viewPos"),  1,&camera.Position[0]);
         
         
         glUniform1f(glGetUniformLocation(ourShader.programID, "material.shininess"), 32.0f);
         
-        glUniform3f(glGetUniformLocation(ourShader.programID, "light.direction"),  -1.2f, -1.0f, -2.0f);
+//        glUniform3f(glGetUniformLocation(ourShader.programID, "light.direction"),  -1.2f, -1.0f, -2.0f);
         glUniform3f(glGetUniformLocation(ourShader.programID, "light.ambient"),  0.1f,0.1f,0.1f  );
         glUniform3f(glGetUniformLocation(ourShader.programID, "light.diffuse"),  1.0f, 1.0f, 1.0f);
         glUniform3f(glGetUniformLocation(ourShader.programID, "light.specular"),  .5f, .5f, 0.5f);
         
+        glUniform1f(glGetUniformLocation(ourShader.programID, "light.constant"), 1.0f);
+        glUniform1f(glGetUniformLocation(ourShader.programID, "light.linear"), 0.09f);
+        glUniform1f(glGetUniformLocation(ourShader.programID, "light.quadratic"), 0.032f);
         
         // Model matrix
         glm::mat4 model = glm::mat4(1.0f);
