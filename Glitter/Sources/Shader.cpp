@@ -72,7 +72,7 @@ namespace Our {
         glDeleteShader(fragmentShader);
     }
     
-    void Shader::user()  {
+    void Shader::use()  {
         glUseProgram(programID);
     }
 

@@ -23,7 +23,7 @@ namespace Our {
     public:
         unsigned int programID;
         Shader(const char *vertexPath, const char *fragmentPath);
-        void  user() ;
+        void  use() ;
         
         void setBool(const std::string &name, bool value) const;
         // ------------------------------------------------------------------------
