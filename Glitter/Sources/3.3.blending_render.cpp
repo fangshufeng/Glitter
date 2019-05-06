@@ -1,5 +1,6 @@
 
 
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
@@ -77,10 +78,13 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS); // always pass the depth test (same effect as glDisable(GL_DEPTH_TEST))
     
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     // build and compile shaders
     // -------------------------
-    Shader  shader  = Shader("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.bleding_discard.vs",
-                             "/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.bleding_discard.fs");
+    Shader  shader  = Shader("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.blending_render.vs",
+                             "/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.blending_render.fs");
     
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -150,6 +154,16 @@ int main()
         1.0f,  0.5f,  0.0f,  1.0f,  0.0f
     };
     
+    vector<glm::vec3> vegetation
+    {
+        glm::vec3(-1.5f, 0.0f, -0.48f),
+        glm::vec3( 1.5f, 0.0f, 0.51f),
+        glm::vec3( 0.0f, 0.0f, 0.7f),
+        glm::vec3(-0.3f, 0.0f, -2.3f),
+        glm::vec3 (0.5f, 0.0f, -0.6f)
+    };
+    
+    
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -187,24 +201,13 @@ int main()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
-
+    
     
     // load textures
     // -------------
     unsigned int cubeTexture  = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/marble.jpg");
     unsigned int floorTexture = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/metal.png");
-    unsigned int transparentTexture = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/grass.png");
-    
-    // transparent vegetation locations
-    // --------------------------------
-    vector<glm::vec3> vegetation
-    {
-        glm::vec3(-1.5f, 0.0f, -0.48f),
-        glm::vec3( 1.5f, 0.0f, 0.51f),
-        glm::vec3( 0.0f, 0.0f, 0.7f),
-        glm::vec3(-0.3f, 0.0f, -2.3f),
-        glm::vec3 (0.5f, 0.0f, -0.6f)
-    };
+    unsigned int blending_transparent_window_texture = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/blending_transparent_window.png");
     
     // shader configuration
     // --------------------
@@ -229,6 +232,14 @@ int main()
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        std::map<float, glm::vec3> sorted;
+        for (unsigned int i = 0; i < vegetation.size(); i++)
+        {
+            float distance = glm::length(vegetation[i] - camera.Position);
+            sorted[distance] = vegetation[i];
+        }
+
         
         shader.use();
         glm::mat4 model = glm::mat4(1.0f);
@@ -256,14 +267,16 @@ int main()
         
         // vegetation
         glBindVertexArray(transparentVAO);
-        glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        for (GLuint i = 0; i < vegetation.size(); i++)
+        glBindTexture(GL_TEXTURE_2D, blending_transparent_window_texture);
+        
+        for (std::map<float, glm::vec3>::reverse_iterator it =  sorted.rbegin(); it != sorted.rend(); ++it)
         {
             model = glm::mat4(1.0f);
-            model = glm::translate(model, vegetation[i]);
+            model = glm::translate(model, it->second);
             shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
+        
         
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
