@@ -1,6 +1,4 @@
 
-
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
@@ -78,15 +76,10 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS); // always pass the depth test (same effect as glDisable(GL_DEPTH_TEST))
     
-    
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    
-//    glEnable(GL_CULL_FACE);
     // build and compile shaders
     // -------------------------
-    Shader  shader  = Shader("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.blending_render.vs",
-                             "/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.blending_render.fs");
+    Shader  shader  = Shader("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.depth_test.vs",
+                                "/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.depth_test.fs");
     
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -98,35 +91,35 @@ int main()
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
+        
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
         -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
+        
         -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
+        
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
+        
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
+        
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
@@ -134,55 +127,6 @@ int main()
         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
-    
-  
-    
-//    float cubeVertices[] = {
-//        // Back face
-//        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-//        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-//        0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right
-//        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-//        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-//        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-//        // Front face
-//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-//        0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-//        0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-//        0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-//        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-//
-//        // Left face
-//        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-//        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-//        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-//        // Right face
-//        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-//        0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-//        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-//        0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-//        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-//        0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-//        // Bottom face
-//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-//        0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-//        0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-//        0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-//        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-//        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-//        // Top face
-//        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-//        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-//        0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-//        0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-//        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-//        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left
-//    };
-//
     float planeVertices[] = {
         // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
         5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
@@ -193,28 +137,6 @@ int main()
         -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
         5.0f, -0.5f, -5.0f,  2.0f, 2.0f
     };
-    
-    float transparentVertices[] = {
-        // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-        0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-        
-        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-        1.0f,  0.5f,  0.0f,  1.0f,  0.0f
-    };
-    
-    vector<glm::vec3> vegetation
-    {
-        glm::vec3(-1.5f, 0.0f, -0.48f),
-        glm::vec3( 1.5f, 0.0f, 0.51f),
-        glm::vec3( 0.0f, 0.0f, 0.7f),
-        glm::vec3(-0.3f, 0.0f, -2.3f),
-        glm::vec3 (0.5f, 0.0f, -0.6f)
-    };
-    
-    
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -240,25 +162,11 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
     
-    // transparent VAO
-    unsigned int transparentVAO, transparentVBO;
-    glGenVertexArrays(1, &transparentVAO);
-    glGenBuffers(1, &transparentVBO);
-    glBindVertexArray(transparentVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glBindVertexArray(0);
-    
-    
     // load textures
     // -------------
-    unsigned int cubeTexture  = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/marble.jpg");
+//    unsigned int cubeTexture  = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/marble.jpg");
+    unsigned int cubeTexture  = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/container.jpg");
     unsigned int floorTexture = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/metal.png");
-    unsigned int blending_transparent_window_texture = loadTexture("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/blending_transparent_window.png");
     
     // shader configuration
     // --------------------
@@ -284,14 +192,6 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        std::map<float, glm::vec3> sorted;
-        for (unsigned int i = 0; i < vegetation.size(); i++)
-        {
-            float distance = glm::length(vegetation[i] - camera.Position);
-            sorted[distance] = vegetation[i];
-        }
-
-        
         shader.use();
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
@@ -315,19 +215,6 @@ int main()
         shader.setMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
-        
-        // vegetation
-        glBindVertexArray(transparentVAO);
-        glBindTexture(GL_TEXTURE_2D, blending_transparent_window_texture);
-        
-        for (std::map<float, glm::vec3>::reverse_iterator it =  sorted.rbegin(); it != sorted.rend(); ++it)
-        {
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, it->second);
-            shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
-        
         
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -407,9 +294,9 @@ unsigned int loadTexture(char const *path) {
     glGenTextures(1,&texture);
     glBindTexture(GL_TEXTURE_2D,texture); // 2d纹理
     
-    // 设置纹理的环绕方式a
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+    // 设置纹理的环绕方式
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
     
     // 设置纹理过滤
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
