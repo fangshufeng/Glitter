@@ -10,12 +10,14 @@
 using namespace std;
 namespace Our {
     
-    Shader::Shader(const char *vertexPath, const char *fragmentPath) {
+    Shader::Shader(const char *vertexPath, const char *fragmentPath, const char *geometryPath) {
         // 读取文件内容
         string vertexCode ;
         string fragmentCode ;
+        std::string geometryCode;
         ifstream vShaderFile;
         ifstream fShaderFile;
+        ifstream gShaderFile;
         
         try {
             vShaderFile.open(vertexPath);
@@ -31,6 +33,16 @@ namespace Our {
 
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
+            
+            // if geometry shader path is present, also load a geometry shader
+            if(geometryPath != nullptr)
+            {
+                gShaderFile.open(geometryPath);
+                std::stringstream gShaderStream;
+                gShaderStream << gShaderFile.rdbuf();
+                gShaderFile.close();
+                geometryCode = gShaderStream.str();
+            }
 
         } catch (ifstream::failure e) {
             cout << "打开文件出错" << endl;
@@ -58,11 +70,23 @@ namespace Our {
         
         checkError(fragmentShader, "FRAGMENT");
         
+        unsigned int geometry;
+        if(geometryPath != nullptr)
+        {
+            const char * gShaderCode = geometryCode.c_str();
+            geometry = glCreateShader(GL_GEOMETRY_SHADER);
+            glShaderSource(geometry, 1, &gShaderCode, NULL);
+            glCompileShader(geometry);
+            checkError(geometry, "GEOMETRY");
+        }
+        
         // 创建程序
         programID = glCreateProgram();
         
         glAttachShader(programID,vertexShader);
         glAttachShader(programID,fragmentShader);
+        if(geometryPath != nullptr)
+            glAttachShader(programID, geometry);
         glLinkProgram(programID);
         
         checkError(programID, "PROGRAM");
@@ -83,13 +107,13 @@ namespace Our {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
             if(!success) {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                std::cout << "ERROR:: 程序编译错误 of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
             }
         } else {
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
             if(!success) {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                std::cout << "ERROR::程序链接错误 of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
             }
         }
     }
