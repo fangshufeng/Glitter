@@ -78,6 +78,7 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
+    
     // build and compile shaders
     // -------------------------
     Shader shader("/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.advanced_lighting.vs", "/Users/fangshufeng/Desktop/thirdPart/Glitter/Glitter/Sources/3.3.advanced_lighting.fs");
